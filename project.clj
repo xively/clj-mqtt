@@ -1,6 +1,6 @@
 (defproject clj-mqtt "0.1.0"
 
-  :description "Clojure MQTT Codec"
+  :description "Clojure MQTT Codec for Netty"
 
   :dependencies [[io.netty/netty-all "4.0.4.Final"]]
 

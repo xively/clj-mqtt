@@ -1,0 +1,36 @@
+#!/bin/bash
+
+if [ $TRAVIS ]; then
+  lein_command="lein2"
+else
+  lein_command="lein"
+fi
+
+function match {
+  grep "$1[[:space:]]\+[[:alnum:]\._-]\+" | head -n1
+}
+
+function extract {
+  sed -e "s/.*$1[[:space:]]\+\([[:alnum:]\.\_\-]\+\).*/\1/g"
+}
+
+function match_and_extract {
+  <$2 match $1 | extract $1
+}
+
+shift $((OPTIND-1))
+
+if [ $# -gt 0 ]; then # we have args
+  # Remove trailing line numbers from filename, e.g. spec/my_spec.rb:33
+  grep_filename=`echo $1 | sed 's/:.*$//g'`
+
+  namespace=`match_and_extract "(ns" $grep_filename`
+  echo $lein_command test $namespace
+  $lein_command test $namespace
+else
+  $lein_command clean && \
+   echo $lein_command test && \
+   $lein_command test
+
+  [[ "$?" = "0" ]] || exit 1
+fi

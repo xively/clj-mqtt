@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/xively/clj-mqtt.png?branch=master)](https://travis-ci.org/xively/clj-mqtt)
 
-Clojure Codec for MQTT. Provides a netty encoder and decoder for the MQTT protocol.
+(Alpha) Clojure Codec for MQTT. Provides a netty encoder and decoder for the MQTT protocol.
 
 ### Using clj-mqtt in your project ###
 
@@ -11,7 +11,7 @@ In the project.clj file at the top level of your project, add clj-mqtt as a depe
 ```clj
 (defproject my-project "1.0.0"
   :dependencies [[org.clojure/clojure "1.5.1"]
-                 [clj-mqtt "0.1.0"]])
+                 [clj-mqtt "0.1.0-alpha"]])
 ```
 
 ## Documentation

@@ -2,6 +2,8 @@
 
   :description "Clojure MQTT Codec for Netty"
 
+  :url "http://github.com/xively/clj-mqtt"
+
   :dependencies [[io.netty/netty-all "4.0.4.Final"]]
 
   ;; Defaults

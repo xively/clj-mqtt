@@ -1,6 +1,49 @@
 (ns mqtt.packets.connect
   (:use mqtt.decoding-utils
-        mqtt.packets.common))
+        mqtt.encoding-utils
+        mqtt.packets.common)
+  (:require [clojure.string :as string])
+  (:import [io.netty.handler.codec EncoderException]))
+
+(defmethod validate-message :connect
+  [{:keys [username password keepalive client-id]}]
+  (if (string/blank? client-id)
+    (throw (new EncoderException)))
+
+  (if (and (string/blank? username)
+           (not (string/blank? password)))
+    (throw (new EncoderException)))
+
+  (if (and (not (nil? keepalive))
+           (neg? keepalive))
+    (throw (new EncoderException))))
+
+(defmethod message-defaults :connect
+  [message]
+  {:protocol-version 0x03
+   :protocol-name "MQIsdp"
+   :clean-session true
+   :will-retain false
+   :will-qos 1
+   :keepalive 10})
+
+(defmethod remaining-length :connect
+  [{:keys [client-id] :as packet}]
+  (+ 1 ;; protocol version
+     1 ;; flags
+     2 ;; keepalive
+     2 (count (utf8-bytes client-id)))) ;; client-id length
+
+(defmethod encode-variable-header :connect
+  [{:keys [protocol-version protocol-name keepalive] :as packet} out]
+  (encode-string out protocol-name)
+  (encode-byte out protocol-version)
+  packet)
+
+(defmethod encode-payload :connect
+  [{:keys [client-id] :as packet} out]
+  (encode-string out client-id)
+  packet)
 
 (defn- decode-connect-flags
   [packet in]

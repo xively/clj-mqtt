@@ -7,17 +7,20 @@
 (defn encode-byte
   "Encode a single byte"
   [out b]
-  (.writeByte out b))
+  (.writeByte out b)
+  out)
 
 (defn encode-bytes
   "Encode a bunch of bytes"
   [out bs]
-  (.writeBytes out bs))
+  (.writeBytes out bs)
+  out)
 
 (defn encode-unsigned-short
   "Encode an unsigned short"
   [out i]
-  (.writeShort out i))
+  (.writeShort out i)
+  out)
 
 (defn encode-string
   "Encode a utf-8 encoded string. Strings are preceeded by 2 bytes describing

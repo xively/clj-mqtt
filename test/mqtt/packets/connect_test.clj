@@ -29,24 +29,64 @@
     (let [encoder (make-encoder)
           packet  {:type :connect
                    :client-id "myclient"
+                   :clean-session false
                    :keepalive 0x0a}
           out     (Unpooled/buffer 24)
           _       (.encode encoder nil packet out)]
       (is (= (byte-buffer-to-bytes out) 
-             [;; fixed header
-              0x10
-              ;; remaining length
-              23
-              ;; Protocol name
-              0x00 0x06 "MQIsdp"
-              ;; protocol version
-              0x03
-              ;; connect flags
-              0x00
-              ;; keepalive
-              0x00 0x0a
-              ;; client id
-              0x00 0x08 "myclient"])))))
+             (into [] (bytes-to-byte-array
+                        ;; fixed header
+                        0x10
+                        ;; remaining length
+                        22
+                        ;; Protocol name
+                        0x00 0x06 "MQIsdp"
+                        ;; protocol version
+                        0x03
+                        ;; connect flags
+                        0x00
+                        ;; keepalive
+                        0x00 0x0a
+                        ;; client id
+                        0x00 0x08 "myclient"))))))
+
+  (testing "when encoding a Connect packet with every option set"
+    (let [encoder (make-encoder)
+          packet  {:type :connect
+                   :client-id "12345678901234567890123"
+                   :keepalive 0xffff
+                   :will-qos 2
+                   :will-topic "will_topic"
+                   :will-message "will_message"
+                   :username "user0123456789"
+                   :password "pass0123456789"}
+          out     (Unpooled/buffer 96)
+          _       (.encode encoder nil packet out)]
+      (is (= (byte-buffer-to-bytes out) 
+             (into [] (bytes-to-byte-array
+                        ;; fixed header
+                        0x10
+                        ;; remaining length
+                        95
+                        ;; Protocol name
+                        0x00 0x06 "MQIsdp"
+                        ;; protocol version
+                        0x03
+                        ;; connect flags
+                        0xf6
+                        ;; keepalive
+                        0xff 0xff
+                        ;; client id
+                        0x00 0x17 "12345678901234567890123"
+                        ;; will-topic
+                        0x00 0x0a "will_topic"
+                        ;; will-message
+                        0x00 0x0c "will_message"
+                        ;; username
+                        0x00 0x0e "user0123456789"
+                        ;; password
+                        0x00 0x0e "pass0123456789"
+                        )))))))
 
 (deftest decoding-connect-packet-test
   (testing "when parsing a simple Connect packet"

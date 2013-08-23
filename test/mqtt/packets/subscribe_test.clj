@@ -5,12 +5,20 @@
         mqtt.encoder
         mqtt.packets.common
         mqtt.packets.subscribe)
-  (:import [io.netty.buffer Unpooled]))
+  (:import [io.netty.buffer Unpooled]
+           [io.netty.handler.codec EncoderException]))
 
 (deftest subscribe-validate-message-test
-  (testing "returns when valid"
-    (let [packet {:type :subscribe}]
-      (is (= packet (validate-message packet))))))
+  (testing "nil when valid"
+    (is (= nil (validate-message {:type :subscribe
+                                  :message-id 1}))))
+
+  (testing "it throws if no message-id"
+    (is (thrown? EncoderException (validate-message {:type :subscribe}))))
+
+  (testing "it throws if message-id is 0"
+    (is (thrown? EncoderException (validate-message {:type :subscribe
+                                                     :message-id 0})))))
 
 (deftest encoding-subscribe-packet-test
   (testing "when encoding a simple subscribe packet"

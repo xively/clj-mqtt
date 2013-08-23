@@ -23,8 +23,8 @@
   {:qos 1})
 
 (defmethod validate-message :subscribe
-  [packet]
-  packet)
+  [{:keys [message-id]}]
+  (validate-message-id 1 message-id))
 
 (defmethod remaining-length :subscribe
   [{:keys [topics]}]

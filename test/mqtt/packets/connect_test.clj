@@ -54,10 +54,12 @@
     (let [encoder (make-encoder)
           packet  {:type :connect
                    :client-id "12345678901234567890123"
+                   :clean-session true
                    :keepalive 0xffff
                    :will-qos 2
                    :will-topic "will_topic"
                    :will-message "will_message"
+                   :will-retain true
                    :username "user0123456789"
                    :password "pass0123456789"}
           out     (Unpooled/buffer 96)

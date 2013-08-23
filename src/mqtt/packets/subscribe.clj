@@ -1,5 +1,6 @@
 (ns mqtt.packets.subscribe
   (:use mqtt.decoding-utils
+        mqtt.encoding-utils
         mqtt.packets.common))
 
 (defmethod decode-variable-header :subscribe
@@ -16,3 +17,30 @@
 (defmethod decode-payload :subscribe
   [packet in]
   (assoc packet :topics (parse-topics in)))
+
+(defmethod message-defaults :subscribe
+  [message]
+  {:qos 1})
+
+(defmethod validate-message :subscribe
+  [{:keys [message-id]}]
+  (validate-message-id 1 message-id))
+
+(defmethod remaining-length :subscribe
+  [{:keys [topics]}]
+  (let [topic-length (fn [[topic qos]] (+ 3 (count (utf8-bytes topic))))]
+    (+ 2 ;; message id
+       ;; topics and subscriptions
+       (reduce + (map topic-length topics)))))
+
+(defmethod encode-variable-header :subscribe
+  [{:keys [message-id] :as packet} out]
+  (encode-unsigned-short out message-id)
+  packet)
+
+(defmethod encode-payload :subscribe
+  [{:keys [topics] :as packet} out]
+  (doseq [[topic qos] topics]
+    (encode-string out topic)
+    (encode-byte out qos))
+  packet)

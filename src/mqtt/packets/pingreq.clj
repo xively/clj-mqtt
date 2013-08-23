@@ -12,3 +12,22 @@
   [packet in]
   packet)
 
+(defmethod message-defaults :pingreq
+  [packet]
+  {})
+
+(defmethod validate-message :pingreq
+  [packet]
+  packet)
+
+(defmethod remaining-length :pingreq
+  [packet]
+  0)
+
+(defmethod encode-variable-header :pingreq
+  [packet out]
+  packet)
+
+(defmethod encode-payload :pingreq
+  [packet out]
+  packet)

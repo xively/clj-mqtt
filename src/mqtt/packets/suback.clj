@@ -1,12 +1,28 @@
 (ns mqtt.packets.suback
   (:use mqtt.core
+        mqtt.decoding-utils
         mqtt.encoding-utils
         mqtt.packets.common)
   (:import [io.netty.handler.codec EncoderException]))
 
+(defmethod decode-variable-header :suback
+  [packet in]
+  (assoc packet :message-id (parse-unsigned-short in)))
+
+(defn- parse-granted-qos
+  [in]
+  (loop [granted-qos []]
+    (if (.isReadable in)
+      (recur (conj granted-qos (parse-unsigned-byte in)))
+      granted-qos)))
+
+(defmethod decode-payload :suback
+  [packet in]
+  (assoc packet :granted-qos (parse-granted-qos in)))
+
 (defmethod message-defaults :suback
   [message]
-  message)
+  {})
 
 (defmethod validate-message :suback
   [{:keys [message-id]}]

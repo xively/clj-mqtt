@@ -22,7 +22,7 @@
 
 (defmethod message-defaults :suback
   [message]
-  message)
+  {})
 
 (defmethod validate-message :suback
   [{:keys [message-id]}]

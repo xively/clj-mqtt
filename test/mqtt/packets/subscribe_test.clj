@@ -1,13 +1,62 @@
 (ns mqtt.packets.subscribe-test
   (:use clojure.test
         mqtt.test_helpers
-        mqtt.decoder))
+        mqtt.decoder
+        mqtt.encoder
+        mqtt.packets.common
+        mqtt.packets.subscribe)
+  (:import [io.netty.buffer Unpooled]))
+
+(deftest subscribe-validate-message-test
+  (testing "returns when valid"
+    (let [packet {:type :subscribe}]
+      (is (= packet (validate-message packet))))))
+
+(deftest encoding-subscribe-packet-test
+  (testing "when encoding a simple subscribe packet"
+    (let [encoder (make-encoder)
+          packet  {:type :subscribe
+                   :message-id 1
+                   :topics [["a/b" 0]]}
+          out     (Unpooled/buffer 10)
+          _       (.encode encoder nil packet out)]
+      (is (= (byte-buffer-to-bytes out) 
+             (into [] (bytes-to-byte-array
+                        ;; fixed header
+                        0x82
+                        ;; remaining length
+                        0x08
+                        ;; message id
+                        0x00 0x01
+                        ;; topic + qos
+                        0x00 0x03 "a/b" 0x00))))))
+
+  (testing "when encoding a subscribe packet with two packets"
+    (let [encoder (make-encoder)
+          packet  {:type :subscribe
+                   :message-id 5
+                   :topics [["a/b" 0] ["c/d" 1]]}
+          out     (Unpooled/buffer 16)
+          _       (.encode encoder nil packet out)]
+      (is (= (byte-buffer-to-bytes out) 
+             (into [] (bytes-to-byte-array
+                        ;; fixed header
+                        0x82
+                        ;; remaining length
+                        14
+                        ;; message id
+                        0x00 0x05
+                        ;; topic + qos
+                        0x00 0x03 "a/b" 0x00
+                        0x00 0x03 "c/d" 0x01)))))))
 
 (deftest decoding-subscribe-packet-test
   (testing "when parsing a packet with a single topic"
     (let [decoder (make-decoder)
           packet  (bytes-to-byte-buffer ;; fixed header
-                                        0x82 0x08
+                                        0x82
+                                        ;; remaining length
+                                        0x08
                                         ;; message id
                                         0x00 0x01
                                         ;; topic + qos

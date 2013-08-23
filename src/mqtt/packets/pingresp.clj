@@ -1,6 +1,16 @@
 (ns mqtt.packets.pingresp
   (:use mqtt.packets.common))
 
+;; No variable header, nothing to do.
+(defmethod decode-variable-header :pingresp
+  [packet in]
+  packet)
+
+;; No payload, nothing to do.
+(defmethod decode-payload :pingresp
+  [packet in]
+  packet)
+
 (defmethod message-defaults :pingresp
   [message]
   {})

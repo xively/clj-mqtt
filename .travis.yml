@@ -3,4 +3,4 @@ jdk:
   - openjdk7
 lein: lein2
 script:
-  - lein all test
+  - lein with-profile all test

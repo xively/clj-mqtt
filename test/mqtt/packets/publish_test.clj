@@ -184,7 +184,7 @@
           packet  {:type :publish :topic "test" :payload "hello world"}
           out     (Unpooled/buffer 19)
           _       (.encode encoder nil packet out)]
-      (is (= (byte-buffer-to-bytes out) 
+      (is (= (byte-buffer-to-bytes out)
              (into [] (bytes-to-byte-array
                         ;; fixed header
                         0x30
@@ -204,7 +204,7 @@
                    :payload "hello world"}
           out     (Unpooled/buffer 0x13)
           _       (.encode encoder nil packet out)]
-      (is (= (byte-buffer-to-bytes out) 
+      (is (= (byte-buffer-to-bytes out)
              (into [] (bytes-to-byte-array
                         ;; fixed header
                         0x32
@@ -227,7 +227,7 @@
                    :payload "hello world"}
           out     (Unpooled/buffer 0x13)
           _       (.encode encoder nil packet out)]
-      (is (= (byte-buffer-to-bytes out) 
+      (is (= (byte-buffer-to-bytes out)
              (into [] (bytes-to-byte-array
                         ;; fixed header
                         0x35
@@ -250,7 +250,7 @@
                    :payload "hello world"}
           out     (Unpooled/buffer 0x13)
           _       (.encode encoder nil packet out)]
-      (is (= (byte-buffer-to-bytes out) 
+      (is (= (byte-buffer-to-bytes out)
              (into [] (bytes-to-byte-array
                         ;; fixed header
                         0x3C

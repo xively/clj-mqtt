@@ -2,8 +2,19 @@
   (:use mqtt.core
         mqtt.packets.common
         mqtt.packets.connack
+        mqtt.packets.connect
+        mqtt.packets.disconnect
+        mqtt.packets.pingreq
         mqtt.packets.pingresp
-        mqtt.packets.suback)
+        mqtt.packets.puback
+        mqtt.packets.pubcomp
+        mqtt.packets.publish
+        mqtt.packets.pubrec
+        mqtt.packets.pubrel
+        mqtt.packets.suback
+        mqtt.packets.subscribe
+        mqtt.packets.unsuback
+        mqtt.packets.unsubscribe)
   (:import [io.netty.handler.codec MessageToByteEncoder]))
 
 (defn- int-to-byte

@@ -1,6 +1,6 @@
 (ns mqtt.packets.suback-test
   (:use clojure.test
-        mqtt.test_helpers
+        mqtt.test-helpers
         mqtt.decoder
         mqtt.encoder
         mqtt.packets.common

@@ -40,7 +40,7 @@
         (is (= "test" (:topic decoded))))
 
       (testing "parses the protocol name"
-        (is (= "hello world" (:payload decoded))))))
+        (is (= "hello world" (String. (:payload decoded)))))))
 
   (testing "when parsing a publish packet with qos 2 and retain and dup flags set"
     (let [decoder (make-decoder)
@@ -76,7 +76,7 @@
         (is (= "c/d" (:topic decoded))))
 
       (testing "parses the protocol name"
-        (is (= "hello world" (:payload decoded))))))
+        (is (= "hello world" (String. (:payload decoded)))))))
 
   (testing "when parsing a publish packet with a 314 byte body"
     (let [decoder (make-decoder)

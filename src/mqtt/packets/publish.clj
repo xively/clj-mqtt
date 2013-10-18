@@ -22,7 +22,7 @@
 
 (defmethod decode-payload :publish
   [packet in]
-  (assoc packet :payload (.toString (.readBytes in (.readableBytes in)) (Charset/forName "UTF-8"))))
+  (assoc packet :payload (.array (.readBytes in (.readableBytes in)))))
 
 (defmethod message-defaults :publish
   [message]

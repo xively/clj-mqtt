@@ -39,7 +39,11 @@
       (testing "parses the topic name"
         (is (= "test" (:topic decoded))))
 
-      (testing "parses the protocol name"
+      (testing "payload is array of bytes"
+        (let [barray (byte-array 0)]
+              (is (= (class barray) (class (:payload decoded))))))
+
+      (testing "parses the payload"
         (is (= "hello world" (String. (:payload decoded)))))))
 
   (testing "when parsing a publish packet with qos 2 and retain and dup flags set"
@@ -75,7 +79,11 @@
       (testing "parses the topic name"
         (is (= "c/d" (:topic decoded))))
 
-      (testing "parses the protocol name"
+      (testing "payload is array of bytes"
+        (let [barray (byte-array 0)]
+              (is (= (class barray) (class (:payload decoded))))))
+
+      (testing "parses the payload"
         (is (= "hello world" (String. (:payload decoded)))))))
 
   (testing "when parsing a publish packet with a 314 byte body"

@@ -1,4 +1,4 @@
-(ns mqtt.test_helpers
+(ns mqtt.test-helpers
   (:import [io.netty.buffer Unpooled]
            [io.netty.channel DefaultChannelHandlerContext]))
 

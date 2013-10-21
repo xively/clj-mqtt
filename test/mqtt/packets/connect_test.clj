@@ -1,6 +1,6 @@
 (ns mqtt.packets.connect-test
   (:use clojure.test
-        mqtt.test_helpers
+        mqtt.test-helpers
         mqtt.encoder
         mqtt.decoder
         mqtt.packets.common

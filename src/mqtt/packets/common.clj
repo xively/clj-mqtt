@@ -19,4 +19,4 @@
              (> qos 0)
              (or (nil? message-id)
                  (= 0 message-id)))
-    (throw (new EncoderException))))
+    (throw (EncoderException. ))))

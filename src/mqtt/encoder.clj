@@ -15,7 +15,8 @@
         mqtt.packets.subscribe
         mqtt.packets.unsuback
         mqtt.packets.unsubscribe)
-  (:import [io.netty.handler.codec MessageToByteEncoder]))
+  (:import [io.netty.handler.codec MessageToByteEncoder]
+           [io.netty.buffer ByteBuf]))
 
 (defn- int-to-byte
   [i]
@@ -26,7 +27,7 @@
   (byte (if bool 0x01 0x00)))
 
 (defn encode-fixed-header
-  [packet out]
+  [packet ^ByteBuf out]
   (let [type-byte (message-type-byte (:type packet))
         dup       (bool-to-byte (:dup packet))
         qos       (int-to-byte (or (:qos packet) 0))
@@ -53,8 +54,9 @@
     'output' digit
   while ( X> 0 )
   "
-  ([packet out] (encode-remaining-length packet out (remaining-length packet)))
-  ([packet out x]
+  ([packet out]
+     (encode-remaining-length packet out (remaining-length packet)))
+  ([packet ^ByteBuf out x]
     (let [digit (mod x 128)
           x     (quot x 128)]
       (if (> x 0)
@@ -68,7 +70,7 @@
 (defn make-encoder
   []
   (proxy [MessageToByteEncoder] []
-    (encode [ctx msg out]
+    (encode [ctx msg ^ByteBuf out]
       (let [msg (merge (message-defaults msg) msg)]
         (validate-message msg)
         (encode-fixed-header msg out)

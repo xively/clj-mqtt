@@ -4,7 +4,8 @@
         mqtt.packets.common)
   (:require [clojure.string :as string])
   (:import [java.nio.charset Charset]
-           [io.netty.handler.codec EncoderException]))
+           [io.netty.handler.codec EncoderException]
+           [io.netty.buffer ByteBuf]))
 
 (defn- has-message-id
   [{:keys [qos]}]
@@ -21,7 +22,7 @@
                 :message-id (parse-message-id packet in)))
 
 (defmethod decode-payload :publish
-  [packet in]
+  [packet ^ByteBuf in]
   (assoc packet :payload (.array (.readBytes in (.readableBytes in)))))
 
 (defmethod message-defaults :publish
@@ -30,8 +31,8 @@
 
 (defmethod validate-message :publish
   [{:keys [topic payload qos message-id]}]
-  (if (string/blank? topic)                 (throw (new EncoderException)))
-  (if (nil? payload)                        (throw (new EncoderException)))
+  (if (string/blank? topic)                 (throw (EncoderException.)))
+  (if (nil? payload)                        (throw (EncoderException.)))
   (validate-message-id qos message-id))
 
 (defmethod remaining-length :publish

@@ -8,15 +8,15 @@
 (defmethod validate-message :connect
   [{:keys [username password keepalive client-id]}]
   (if (string/blank? client-id)
-    (throw (new EncoderException)))
+    (throw (EncoderException.)))
 
   (if (and (string/blank? username)
            (not (string/blank? password)))
-    (throw (new EncoderException)))
+    (throw (EncoderException.)))
 
   (if (and (not (nil? keepalive))
            (neg? keepalive))
-    (throw (new EncoderException))))
+    (throw (EncoderException.))))
 
 (defmethod message-defaults :connect
   [message]

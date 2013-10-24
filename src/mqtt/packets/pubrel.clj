@@ -2,8 +2,7 @@
   (:use mqtt.core
         mqtt.decoding-utils
         mqtt.encoding-utils
-        mqtt.packets.common)
-  (:import [io.netty.handler.codec EncoderException]))
+        mqtt.packets.common))
 
 (defmethod decode-variable-header :pubrel
   [packet in]

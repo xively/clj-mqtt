@@ -17,11 +17,13 @@
         mqtt.packets.unsuback
         mqtt.packets.unsubscribe)
   (:import [io.netty.handler.codec ReplayingDecoder]
+           [io.netty.buffer ByteBuf]
            [java.io StreamCorruptedException]))
 
 (defn decode-fixed-header
   "Decode the first byte of a packet. Checks that message-type is not nil."
-  ([in] (decode-fixed-header {} in))
+  ([in]
+     (decode-fixed-header {} in))
   ([packet in]
     (let [flags (parse-flags in
                             :type 4
@@ -31,7 +33,7 @@
           parsed-message-type (message-types (:type flags))]
 
       (when (nil? parsed-message-type)
-        (throw (new StreamCorruptedException "Valid message types are 1 through 14")))
+        (throw (StreamCorruptedException. "Valid message types are 1 through 14")))
 
       {:type    parsed-message-type
        :dup     (:dup flags)
@@ -52,8 +54,9 @@
     multiplier *= 128
   while ((digit AND 128) != 0)
   "
-  ([in] (parse-remaining-length in 1 0))
-  ([in multiplier value]
+  ([in]
+     (parse-remaining-length in 1 0))
+  ([^ByteBuf in multiplier value]
     (let [digit (.readUnsignedByte in)
           value (+ value (* (bit-and 127 digit) multiplier))
           multiplier (* multiplier 128)]
@@ -64,7 +67,7 @@
 (defn make-decoder
   []
   (proxy [ReplayingDecoder] []
-    (decode [ctx in out]
+    (decode [ctx ^ByteBuf in ^java.util.List out]
       (when (.isReadable in)
         (let [fixed-header     (decode-fixed-header in)
               ;; slice down the buffer so we can't overflow

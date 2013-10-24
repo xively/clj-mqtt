@@ -3,14 +3,14 @@
         mqtt.decoding-utils
         mqtt.encoding-utils
         mqtt.packets.common)
-  (:import [io.netty.handler.codec EncoderException]))
+  (:import [io.netty.buffer ByteBuf]))
 
 (defmethod decode-variable-header :suback
   [packet in]
   (assoc packet :message-id (parse-unsigned-short in)))
 
 (defn- parse-granted-qos
-  [in]
+  [^ByteBuf in]
   (loop [granted-qos []]
     (if (.isReadable in)
       (recur (conj granted-qos (parse-unsigned-byte in)))

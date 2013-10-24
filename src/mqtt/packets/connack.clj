@@ -12,7 +12,7 @@
 (defmethod validate-message :connack
   [message]
   (if-not (connack-return-code-byte (:return-code message))
-    (throw (new EncoderException))))
+    (throw (EncoderException.))))
 
 (defmethod remaining-length :connack
   [packet]

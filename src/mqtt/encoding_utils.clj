@@ -1,4 +1,5 @@
-(ns mqtt.encoding-utils)
+(ns mqtt.encoding-utils
+  (:import [io.netty.buffer ByteBuf]))
 
 (defn utf8-bytes
   [s]
@@ -6,26 +7,26 @@
 
 (defn encode-byte
   "Encode a single byte"
-  [out b]
+  [^ByteBuf out b]
   (.writeByte out b)
   out)
 
 (defn encode-bytes
   "Encode a bunch of bytes"
-  [out bs]
+  [^ByteBuf out #^bytes bs]
   (.writeBytes out bs)
   out)
 
 (defn encode-unsigned-short
   "Encode an unsigned short"
-  [out i]
+  [^ByteBuf out i]
   (.writeShort out i)
   out)
 
 (defn encode-string
   "Encode a utf-8 encoded string. Strings are preceeded by 2 bytes describing
   the length of the remaining content."
-  [out string]
+  [^ByteBuf out string]
   (let [bs (utf8-bytes string)]
     (encode-unsigned-short out (count bs))
     (encode-bytes out bs)))

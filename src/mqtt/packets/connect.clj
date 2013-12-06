@@ -34,14 +34,14 @@
     0))
 
 (defmethod remaining-length :connect
-  [{:keys [client-id protocol-name will-topic will-message username password]}]
+  [{:keys [client-id protocol-name will-topic will-payload username password]}]
   (+ 2 (count (utf8-bytes protocol-name)) ;; protocol version
      1 ;; protocol version
      1 ;; flags
      2 ;; keepalive
      2 (count (utf8-bytes client-id)) ;; client-id length
      (optional-string-length will-topic)
-     (optional-string-length will-message)
+     (optional-string-length will-payload)
      (optional-string-length username)
      (optional-string-length password)))
 
@@ -64,10 +64,10 @@
   packet)
 
 (defmethod encode-payload :connect
-  [{:keys [client-id will-topic will-message username password] :as packet} out]
+  [{:keys [client-id will-topic will-payload username password] :as packet} out]
   (encode-string out client-id)
   (if will-topic   (encode-string out will-topic))
-  (if will-message (encode-string out will-message))
+  (if will-payload (encode-string out will-payload))
   (if username     (encode-string out username))
   (if password     (encode-string out password))
   packet)

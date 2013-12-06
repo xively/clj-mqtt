@@ -58,7 +58,7 @@
                    :keepalive 0xffff
                    :will-qos 2
                    :will-topic "will_topic"
-                   :will-message "will_message"
+                   :will-payload "will_payload"
                    :will-retain true
                    :username "user0123456789"
                    :password "pass0123456789"}
@@ -82,8 +82,8 @@
                         0x00 0x17 "12345678901234567890123"
                         ;; will-topic
                         0x00 0x0a "will_topic"
-                        ;; will-message
-                        0x00 0x0c "will_message"
+                        ;; will-payload
+                        0x00 0x0c "will_payload"
                         ;; username
                         0x00 0x0e "user0123456789"
                         ;; password
@@ -333,7 +333,7 @@
                     ;; will topic               (12 bytes)
                     0x00 0x0A "will_topic"
                     ;; will message             (14 bytes)
-                    0x00 0x0C "will_message"
+                    0x00 0x0C "will_payload"
                     ;; username                 (16 bytes)
                     0x00 0x0E "user0123456789"
                     ;; password                 (16 bytes)
@@ -375,7 +375,7 @@
         (is (= "will_topic" (:will-topic decoded))))
 
       (testing "should set the will payload"
-        (is (= "will_message" (:will-payload decoded))))
+        (is (= "will_payload" (:will-payload decoded))))
 
       (testing "should have a username"
         (is (= "user0123456789" (:username decoded))))

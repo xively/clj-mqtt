@@ -1,5 +1,6 @@
 (ns mqtt.test-helpers
-  (:import [io.netty.buffer Unpooled]
+  (:import [java.nio ByteBuffer]
+           [io.netty.buffer Unpooled]
            [io.netty.channel DefaultChannelHandlerContext]))
 
 (defn unsigned-byte
@@ -25,12 +26,14 @@
   (byte-array (flatten-bytes bs)))
 
 (defn bytes-to-byte-buffer
-  "Take a bunch of bytes or strings and make a netty bytebuffer"
+  "Take a bunch of bytes or strings and make a io.netty.buffer.ByteBuf"
   [ & bs ]
-  (let [flattened (flatten-bytes bs)
-        buffer    (Unpooled/buffer (count flattened))]
-    (dorun (map #(.writeByte buffer %) flattened))
-    buffer))
+  (Unpooled/wrappedBuffer (apply bytes-to-byte-array bs)))
+
+(defn bytes-to-java-byte-buffer
+  "Take a bunch of bytes or strings and make a java.nio.ByteBuffer"
+  [ & bs ]
+  (ByteBuffer/wrap (apply bytes-to-byte-array bs)))
 
 (defn byte-buffer-to-bytes
   "Take a byte buffer and read all it's bytes into an array for printing. This

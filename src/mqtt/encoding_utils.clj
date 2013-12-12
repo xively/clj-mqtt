@@ -3,7 +3,7 @@
            [io.netty.buffer ByteBuf]))
 
 (defn utf8-bytes
-  #^bytes [s]
+  ^bytes [s]
   (.getBytes (str s) "UTF-8"))
 
 (defn encode-byte
@@ -38,7 +38,7 @@
 
   #=(java.lang.Class/forName "[B")
   (encode-bytes [bs ^ByteBuf out]
-    (.writeBytes out bs))
+    (.writeBytes out ^bytes bs))
   (remaining-bytes [bs]
     (count bs)))
 

@@ -23,7 +23,9 @@
 
 (defmethod decode-payload :publish
   [packet ^ByteBuf in]
-  (assoc packet :payload (.array (.readBytes in (.readableBytes in)))))
+  (let [bs (byte-array (.readableBytes in))]
+    (.readBytes in bs)
+    (assoc packet :payload bs)))
 
 (defmethod message-defaults :publish
   [message]
@@ -39,7 +41,7 @@
   [{:keys [qos topic payload] :as packet}]
   (+ 2 (count (utf8-bytes topic))       ;; topic length
      (if (has-message-id packet) 2 0)  ;; if we need to include a message id
-     (count (utf8-bytes payload))))     ;; payload length
+     (remaining-bytes payload)))     ;; payload length
 
 (defmethod encode-variable-header :publish
   [{:keys [topic message-id] :as packet} out]
@@ -50,5 +52,5 @@
 
 (defmethod encode-payload :publish
   [{:keys [payload] :as packet} out]
-  (encode-bytes out (utf8-bytes payload))
+  (encode-bytes payload out)
   packet)

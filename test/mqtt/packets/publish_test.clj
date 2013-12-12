@@ -203,6 +203,27 @@
                         ;; payload
                         "hello world"))))))
 
+  (testing "when encoding a publish packets with other types of payloads"
+    (doseq [[container  payload] {"string" "hello world"
+                                  "byte-array" (bytes-to-byte-array "hello world")
+                                  "io.netty.buffer.ByteBuf" (bytes-to-byte-buffer "hello world")
+                                  "java.nio.ByteBuffer" (bytes-to-java-byte-buffer "hello world")}]
+      (testing (str "data in a " container)
+        (let [encoder (make-encoder)
+              packet  {:type :publish :topic "test" :payload payload}
+              out     (Unpooled/buffer 19)]
+          (.encode encoder nil packet out)
+          (is (= (byte-buffer-to-bytes out)
+                 (into [] (bytes-to-byte-array
+                           ;; fixed header
+                           0x30
+                           ;; remaining length
+                           0x11
+                           ;; topic
+                           0x00 0x04 "test"
+                           ;; payload
+                           "hello world"))))))))
+
   (testing "when encoding a publish packet with qos 1 and message id"
     (let [encoder (make-encoder)
           packet  {:type :publish

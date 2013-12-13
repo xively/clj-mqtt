@@ -16,9 +16,9 @@
   (testing "when encoding a simple disconnect packet"
     (let [encoder (make-encoder)
           packet  {:type :disconnect}
-          out     (Unpooled/buffer 2)
-          _       (.encode encoder nil packet out)]
-      (is (= (byte-buffer-to-bytes out) 
+          out     (Unpooled/buffer 2)]
+      (.encode encoder nil packet out)
+      (is (= (byte-buffer-to-bytes out)
              (into [] (bytes-to-byte-array
                         ;; fixed header
                         0xE0

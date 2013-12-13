@@ -19,7 +19,7 @@
 
 (defn parse-unsigned-short
   "Decode an unsigned short"
-  [^ByteBuf in]
+  ^Integer [^ByteBuf in]
   (assert-readable-bytes in 2)
   (.readUnsignedShort in))
 
@@ -61,10 +61,12 @@
       (.readBytes in bs)
       bs)))
 
+(def ^{:private true} utf-8 (Charset/forName "UTF-8"))
+
 (defn parse-string
   "Decode a utf-8 encoded string. Strings are preceeded by 2 bytes describing
   the length of the remaining content."
   [^ByteBuf in]
-  (let [len (int (parse-unsigned-short in))]
+  (let [len (parse-unsigned-short in)]
     (assert-readable-bytes in len)
-    (.toString (.readSlice in len) (Charset/forName "UTF-8"))))
+    (.toString (.readBytes in len) utf-8)))

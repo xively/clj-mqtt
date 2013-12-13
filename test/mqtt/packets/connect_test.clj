@@ -31,9 +31,9 @@
                    :client-id "myclient"
                    :clean-session false
                    :keepalive 0x0a}
-          out     (Unpooled/buffer 24)
-          _       (.encode encoder nil packet out)]
-      (is (= (byte-buffer-to-bytes out) 
+          out     (Unpooled/buffer 24)]
+      (.encode encoder nil packet out)
+      (is (= (byte-buffer-to-bytes out)
              (into [] (bytes-to-byte-array
                         ;; fixed header
                         0x10
@@ -62,9 +62,9 @@
                    :will-retain true
                    :username "user0123456789"
                    :password "pass0123456789"}
-          out     (Unpooled/buffer 96)
-          _       (.encode encoder nil packet out)]
-      (is (= (byte-buffer-to-bytes out) 
+          out     (Unpooled/buffer 96)]
+      (.encode encoder nil packet out)
+      (is (= (byte-buffer-to-bytes out)
              (into [] (bytes-to-byte-array
                         ;; fixed header
                         0x10

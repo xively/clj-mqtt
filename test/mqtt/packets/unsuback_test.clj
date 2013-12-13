@@ -24,9 +24,9 @@
   (testing "when encoding a simple unsuback packet"
     (let [encoder (make-encoder)
           packet  {:type :unsuback :message-id 5}
-          out     (Unpooled/buffer 4)
-          _       (.encode encoder nil packet out)]
-      (is (= (byte-buffer-to-bytes out) 
+          out     (Unpooled/buffer 4)]
+      (.encode encoder nil packet out)
+      (is (= (byte-buffer-to-bytes out)
              (into [] (bytes-to-byte-array
                         ;; fixed header
                         0xB0
@@ -38,9 +38,9 @@
   (testing "when encoding a unsuback for two topics"
     (let [encoder (make-encoder)
           packet  {:type :unsuback :message-id 6}
-          out     (Unpooled/buffer 4)
-          _       (.encode encoder nil packet out)]
-      (is (= (byte-buffer-to-bytes out) 
+          out     (Unpooled/buffer 4)]
+      (.encode encoder nil packet out)
+      (is (= (byte-buffer-to-bytes out)
              (into [] (bytes-to-byte-array
                         ;; fixed header
                         0xB0

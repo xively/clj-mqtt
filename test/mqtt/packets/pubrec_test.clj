@@ -24,8 +24,8 @@
   (testing "when encoding a simple pubrec packet"
     (let [encoder (make-encoder)
           packet  {:type :pubrec :message-id 5}
-          out     (Unpooled/buffer 4)
-          _       (.encode encoder nil packet out)]
+          out     (Unpooled/buffer 4)]
+      (.encode encoder nil packet out)
       (is (= (byte-buffer-to-bytes out)
              [;; fixed header
               2r01010000

@@ -34,7 +34,6 @@
 (defmethod validate-message :publish
   [{:keys [topic payload qos message-id]}]
   (if (string/blank? topic)                 (throw (EncoderException.)))
-  (if (nil? payload)                        (throw (EncoderException.)))
   (validate-message-id qos message-id))
 
 (defmethod remaining-length :publish

@@ -40,7 +40,13 @@
   (encode-bytes [bs ^ByteBuf out]
     (.writeBytes out ^bytes bs))
   (remaining-bytes [bs]
-    (count bs)))
+    (count bs))
+
+  nil
+  (encode-bytes [_ ^ByteBuf out]
+    out)
+  (remaining-bytes [_]
+    0))
 
 (defn encode-unsigned-short
   "Encode an unsigned short"

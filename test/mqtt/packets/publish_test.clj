@@ -169,10 +169,6 @@
     (is (thrown? EncoderException (validate-message {:type :publish
                                                      :payload "ohai"}))))
 
-  (testing "it throws for missing payload"
-    (is (thrown? EncoderException (validate-message {:type :publish
-                                                     :topic "test"}))))
-
   (testing "it throws if qos > 0 and no message-id"
     (is (thrown? EncoderException (validate-message {:type :publish
                                                      :qos 1
@@ -202,6 +198,20 @@
                         0x00 0x04 "test"
                         ;; payload
                         "hello world"))))))
+
+  (testing "when encoding a publish packet with no payload"
+    (let [encoder (make-encoder)
+          packet  {:type :publish :topic "test"}
+          out     (Unpooled/buffer 8)]
+      (.encode encoder nil packet out)
+      (is (= (byte-buffer-to-bytes out)
+             (into [] (bytes-to-byte-array
+                        ;; fixed header
+                        0x30
+                        ;; remaining length
+                        0x06
+                        ;; topic
+                        0x00 0x04 "test"))))))
 
   (testing "when encoding a publish packets with other types of payloads"
     (doseq [[container  payload] {"string" "hello world"

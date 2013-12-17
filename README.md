@@ -11,7 +11,7 @@ In the project.clj file at the top level of your project, add clj-mqtt as a depe
 ```clj
 (defproject my-project "1.0.0"
   :dependencies [[org.clojure/clojure "1.5.1"]
-                 [clj-mqtt "0.4.0-alpha"]])
+                 [clj-mqtt "0.4.1-alpha"]])
 ```
 
 ## Documentation

@@ -103,7 +103,7 @@
 (defn- decode-will-payload
   [{:keys [has-will] :as packet} in]
   (if has-will
-    (assoc packet :will-payload (parse-string in))
+    (assoc packet :will-payload (parse-short-prefixed-bytes in))
     packet))
 
 (defn- decode-username

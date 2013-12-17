@@ -207,7 +207,7 @@
         (is (= "topic" (:will-topic decoded))))
 
       (testing "should set the payload of the will packet"
-        (is (= "hello" (:will-payload decoded))))))
+        (is (= "hello" (String. (:will-payload decoded)))))))
 
   (testing "when parsing a Connect packet with a username and password"
     (let [decoder (make-decoder)
@@ -375,7 +375,7 @@
         (is (= "will_topic" (:will-topic decoded))))
 
       (testing "should set the will payload"
-        (is (= "will_payload" (:will-payload decoded))))
+        (is (= "will_payload" (String. (:will-payload decoded)))))
 
       (testing "should have a username"
         (is (= "user0123456789" (:username decoded))))

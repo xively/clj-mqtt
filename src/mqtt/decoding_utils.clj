@@ -52,10 +52,19 @@
   [in & kvs]
   (do-parse-flags (parse-unsigned-byte in) {} 8 kvs))
 
+(defn parse-short-prefixed-bytes
+  "Decode a short, then as many bytes as the short says."
+  [^ByteBuf in]
+  (let [len (int (parse-unsigned-short in))]
+    (assert-readable-bytes in len)
+    (let [bs (byte-array len)]
+      (.readBytes in bs)
+      bs)))
+
 (defn parse-string
   "Decode a utf-8 encoded string. Strings are preceeded by 2 bytes describing
   the length of the remaining content."
   [^ByteBuf in]
   (let [len (int (parse-unsigned-short in))]
     (assert-readable-bytes in len)
-    (.toString (.readBytes in len) (Charset/forName "UTF-8"))))
+    (.toString (.readSlice in len) (Charset/forName "UTF-8"))))

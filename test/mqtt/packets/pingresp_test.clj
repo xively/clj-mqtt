@@ -16,9 +16,9 @@
   (testing "when encoding a simple pingresp packet"
     (let [encoder (make-encoder)
           packet  {:type :pingresp}
-          out     (Unpooled/buffer 2)
-          _       (.encode encoder nil packet out)]
-      (is (= (byte-buffer-to-bytes out) 
+          out     (Unpooled/buffer 2)]
+      (.encode encoder nil packet out)
+      (is (= (byte-buffer-to-bytes out)
              [;; fixed header
               (unsigned-byte 0xD0)
               ;; remaining length

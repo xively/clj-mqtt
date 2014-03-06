@@ -27,9 +27,9 @@
   (testing "when encoding a simple suback packet"
     (let [encoder (make-encoder)
           packet  {:type :suback :message-id 5 :granted-qos [0]}
-          out     (Unpooled/buffer 5)
-          _       (.encode encoder nil packet out)]
-      (is (= (byte-buffer-to-bytes out) 
+          out     (Unpooled/buffer 5)]
+      (.encode encoder nil packet out)
+      (is (= (byte-buffer-to-bytes out)
              [;; fixed header
               (unsigned-byte 0x90)
               ;; remaining length
@@ -42,9 +42,9 @@
   (testing "when encoding a suback for two topics"
     (let [encoder (make-encoder)
           packet  {:type :suback :message-id 6 :granted-qos [0 1]}
-          out     (Unpooled/buffer 5)
-          _       (.encode encoder nil packet out)]
-      (is (= (byte-buffer-to-bytes out) 
+          out     (Unpooled/buffer 5)]
+      (.encode encoder nil packet out)
+      (is (= (byte-buffer-to-bytes out)
              [;; fixed header
               (unsigned-byte 0x90)
               ;; remaining length

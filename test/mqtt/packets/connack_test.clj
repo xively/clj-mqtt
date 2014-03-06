@@ -22,9 +22,9 @@
   (testing "when encoding a simple Connack packet"
     (let [encoder (make-encoder)
           packet  {:type :connack :return-code :accepted}
-          out     (Unpooled/buffer 4)
-          _       (.encode encoder nil packet out)]
-      (is (= (byte-buffer-to-bytes out) 
+          out     (Unpooled/buffer 4)]
+      (.encode encoder nil packet out)
+      (is (= (byte-buffer-to-bytes out)
              [;; fixed header
               0x20
               ;; remaining length
@@ -37,8 +37,8 @@
   (testing "when encoding a Connack packet with everything set"
     (let [encoder (make-encoder)
           packet  {:type :connack :return-code :accepted :dup true :qos 3 :retain true}
-          out     (Unpooled/buffer 4)
-          _       (.encode encoder nil packet out)]
+          out     (Unpooled/buffer 4)]
+      (.encode encoder nil packet out)
       (is (= (byte-buffer-to-bytes out) 
              [;; fixed header
               0x2F
@@ -52,8 +52,8 @@
   (testing "when encoding a rejected Connack packet"
     (let [encoder (make-encoder)
           packet  {:type :connack :return-code :bad-username-or-password}
-          out     (Unpooled/buffer 4)
-          _       (.encode encoder nil packet out)]
+          out     (Unpooled/buffer 4)]
+      (.encode encoder nil packet out)
       (is (= (byte-buffer-to-bytes out) 
              [;; fixed header
               0x20
@@ -67,8 +67,8 @@
   (testing "when encoding a Connack packet without a return code"
     (let [encoder (make-encoder)
           packet  {:type :connack}
-          out     (Unpooled/buffer 4)
-          _       (.encode encoder nil packet out)]
+          out     (Unpooled/buffer 4)]
+      (.encode encoder nil packet out)
       (is (= (byte-buffer-to-bytes out) 
              [;; fixed header
               0x20

@@ -6,7 +6,7 @@
         mqtt.packets.common
         mqtt.packets.publish)
   (:require [clojure.string :as string])
-  (:import [io.netty.buffer Unpooled]
+  (:import [io.netty.buffer Unpooled ByteBuf]
            [io.netty.handler.codec EncoderException]))
 
 (deftest decoding-publish-packet-test
@@ -39,9 +39,8 @@
       (testing "parses the topic name"
         (is (= "test" (:topic decoded))))
 
-      (testing "payload is array of bytes"
-        (let [barray (byte-array 0)]
-              (is (= (class barray) (class (:payload decoded))))))
+      (testing "payload is a byte array"
+        (is (instance? (Class/forName "[B") (:payload decoded))))
 
       (testing "parses the payload"
         (is (= "hello world" (String. (:payload decoded)))))))
@@ -79,9 +78,8 @@
       (testing "parses the topic name"
         (is (= "c/d" (:topic decoded))))
 
-      (testing "payload is array of bytes"
-        (let [barray (byte-array 0)]
-              (is (= (class barray) (class (:payload decoded))))))
+      (testing "payload is a byte array"
+        (is (instance? (Class/forName "[B") (:payload decoded))))
 
       (testing "parses the payload"
         (is (= "hello world" (String. (:payload decoded)))))))
@@ -117,7 +115,7 @@
       (testing "parses the topic name"
         (is (= "topic" (:topic decoded))))
 
-      (testing "parses the protocol name"
+      (testing "parses the payload"
         (is (= 314 (count (:payload decoded)))))))
 
   (testing "when parsing a publish packet with a 16kilobyte body"
@@ -186,8 +184,8 @@
   (testing "when encoding a simple publish packet"
     (let [encoder (make-encoder)
           packet  {:type :publish :topic "test" :payload "hello world"}
-          out     (Unpooled/buffer 19)
-          _       (.encode encoder nil packet out)]
+          out     (Unpooled/buffer 19)]
+      (.encode encoder nil packet out)
       (is (= (byte-buffer-to-bytes out)
              (into [] (bytes-to-byte-array
                         ;; fixed header
@@ -241,8 +239,8 @@
                    :message-id 5
                    :topic "a/b"
                    :payload "hello world"}
-          out     (Unpooled/buffer 0x13)
-          _       (.encode encoder nil packet out)]
+          out     (Unpooled/buffer 0x13)]
+      (.encode encoder nil packet out)
       (is (= (byte-buffer-to-bytes out)
              (into [] (bytes-to-byte-array
                         ;; fixed header
@@ -264,8 +262,8 @@
                    :message-id 5
                    :topic "c/d"
                    :payload "hello world"}
-          out     (Unpooled/buffer 0x13)
-          _       (.encode encoder nil packet out)]
+          out     (Unpooled/buffer 0x13)]
+      (.encode encoder nil packet out)
       (is (= (byte-buffer-to-bytes out)
              (into [] (bytes-to-byte-array
                         ;; fixed header
@@ -287,8 +285,8 @@
                    :message-id 5
                    :topic "c/d"
                    :payload "hello world"}
-          out     (Unpooled/buffer 0x13)
-          _       (.encode encoder nil packet out)]
+          out     (Unpooled/buffer 0x13)]
+      (.encode encoder nil packet out)
       (is (= (byte-buffer-to-bytes out)
              (into [] (bytes-to-byte-array
                         ;; fixed header
@@ -308,8 +306,8 @@
                    :qos 0
                    :topic "currency.€"
                    :payload "23€"}
-          out     (Unpooled/buffer)
-          _       (.encode encoder nil packet out)]
+          out     (Unpooled/buffer)]
+      (.encode encoder nil packet out)
       (is (= (byte-buffer-to-bytes out)
              (into [] (bytes-to-byte-array
                         ;; fixed header
@@ -327,8 +325,8 @@
                    :qos 0
                    :topic "topic"
                    :payload (string/join (take 314 (repeat \x)))}
-          out     (Unpooled/buffer)
-          _       (.encode encoder nil packet out)]
+          out     (Unpooled/buffer)]
+      (.encode encoder nil packet out)
       (is (= (byte-buffer-to-bytes out)
              (into [] (bytes-to-byte-array
                         ;; fixed header

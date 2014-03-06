@@ -18,9 +18,9 @@
           packet  {:type :unsubscribe
                    :message-id 1
                    :topics ["a/b"]}
-          out     (Unpooled/buffer 9)
-          _       (.encode encoder nil packet out)]
-      (is (= (byte-buffer-to-bytes out) 
+          out     (Unpooled/buffer 9)]
+      (.encode encoder nil packet out)
+      (is (= (byte-buffer-to-bytes out)
              (into [] (bytes-to-byte-array
                         ;; fixed header
                         0xA2
@@ -36,9 +36,9 @@
           packet  {:type :unsubscribe
                    :message-id 5
                    :topics ["a/b", "c/d"]}
-          out     (Unpooled/buffer 14)
-          _       (.encode encoder nil packet out)]
-      (is (= (byte-buffer-to-bytes out) 
+          out     (Unpooled/buffer 14)]
+      (.encode encoder nil packet out)
+      (is (= (byte-buffer-to-bytes out)
              (into [] (bytes-to-byte-array
                         ;; fixed header
                         0xA2

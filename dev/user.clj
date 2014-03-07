@@ -12,6 +12,9 @@
             [clojure.tools.namespace.repl :refer (refresh refresh-all)]
             [criterium.core :refer [bench]]))
 
-(defn run-my-tests []
-  (refresh)
-  (test/run-all-tests #"mqtt.*?"))
+(defn run-my-tests
+  ([]
+   (run-my-tests 'mqtt))
+  ([ns]
+   (refresh)
+   (test/run-all-tests (re-pattern (str ns ".*?")))))

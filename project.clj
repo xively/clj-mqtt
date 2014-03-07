@@ -12,7 +12,10 @@
 
   :profiles {
     :dev {:dependencies [[org.clojure/clojure "1.5.1"]
+                         [criterium "0.4.3"]
+                         [org.clojure/tools.namespace "0.2.4"]
                          [org.eclipse.paho/mqtt-client "0.2.1"]]
+          :source-paths ["dev"]
           :global-vars {*warn-on-reflection* true}}
 
     :1.3 {:dependencies [[org.clojure/clojure "1.3.0"]

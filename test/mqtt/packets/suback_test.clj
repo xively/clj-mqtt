@@ -5,6 +5,7 @@
         mqtt.encoder
         mqtt.packets.common
         mqtt.packets.suback)
+  (:require [mqtt.decoding-utils :as du])
   (:import [io.netty.buffer Unpooled]
            [io.netty.handler.codec EncoderException]))
 
@@ -31,7 +32,7 @@
       (.encode encoder nil packet out)
       (is (= (byte-buffer-to-bytes out)
              [;; fixed header
-              (unsigned-byte 0x90)
+              (du/unsigned-byte 0x90)
               ;; remaining length
               0x03
               ;; message id
@@ -46,7 +47,7 @@
       (.encode encoder nil packet out)
       (is (= (byte-buffer-to-bytes out)
              [;; fixed header
-              (unsigned-byte 0x90)
+              (du/unsigned-byte 0x90)
               ;; remaining length
               0x04
               ;; message id

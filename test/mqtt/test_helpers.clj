@@ -1,23 +1,15 @@
 (ns mqtt.test-helpers
+  (:require [mqtt.decoding-utils :as du])
   (:import [java.nio ByteBuffer]
            [io.netty.buffer Unpooled ByteBuf]
            [io.netty.channel DefaultChannelHandlerContext]))
-
-(defn unsigned-byte
-  "Cast to unsigned byte.
-  256 is Byte/MAX_VALUE - Byte/MIN_VALUE."
-  [b]
-  (cond
-    (> b Byte/MAX_VALUE) (recur (- b 256))
-    (< b Byte/MIN_VALUE) (recur (+ b 256))
-    :else (byte b)))
 
 (defn- flatten-bytes
   [bs]
   (let [convert   (fn [a]
                     (if (isa? (class a) String)
-                      (map unsigned-byte (.getBytes ^String a "UTF-8"))
-                      (unsigned-byte a)))]
+                      (map du/unsigned-byte (.getBytes ^String a "UTF-8"))
+                      (du/unsigned-byte a)))]
     (flatten (map convert bs))))
 
 (defn bytes-to-byte-array

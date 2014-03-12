@@ -5,6 +5,7 @@
         mqtt.encoder
         mqtt.packets.common
         mqtt.packets.pingresp)
+  (:require [mqtt.decoding-utils :as du])
   (:import [io.netty.buffer Unpooled]))
 
 (deftest pingresp-validate-message-test
@@ -20,7 +21,7 @@
       (.encode encoder nil packet out)
       (is (= (byte-buffer-to-bytes out)
              [;; fixed header
-              (unsigned-byte 0xD0)
+              (du/unsigned-byte 0xD0)
               ;; remaining length
               0x00])))))
 

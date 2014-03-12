@@ -61,12 +61,37 @@
       (.readBytes in bs)
       bs)))
 
-(def ^{:private true} utf-8 (Charset/forName "UTF-8"))
+(def ^:private utf-8 (Charset/forName "UTF-8"))
+
+(defn unsigned-byte
+  "Cast to unsigned byte.
+  256 is Byte/MAX_VALUE - Byte/MIN_VALUE."
+  [b]
+  (cond
+    (> b Byte/MAX_VALUE) (recur (- b 256))
+    (< b Byte/MIN_VALUE) (recur (+ b 256))
+    :else (byte b)))
+
+(defn has-bad-bytes?
+  "Don't allow \u0000, \ud800 to \udfff"
+  [in]
+  (let [[ch0 ch1 ch2 & rst] (seq in)]
+    (when ch0
+      (or (= ch0 (unsigned-byte 0x00))
+          (and (= ch0 (unsigned-byte 0xed))
+               (>= ch1 (unsigned-byte 0xa0))
+               (>= ch2 (unsigned-byte 0x80))
+               (<= ch1 (unsigned-byte 0xbf))
+               (<= ch2 (unsigned-byte 0xbf)))
+          (recur rst)))))
 
 (defn parse-string
   "Decode a utf-8 encoded string. Strings are preceeded by 2 bytes describing
   the length of the remaining content."
   [^ByteBuf in]
-  (let [len (parse-unsigned-short in)]
-    (assert-readable-bytes in len)
-    (.toString (.readBytes in len) utf-8)))
+  (let [len (int (parse-unsigned-short in))
+        _   (assert-readable-bytes in len)
+        bs  (byte-array len)]
+    (.readBytes in bs)
+    (when (has-bad-bytes? bs) (throw (Exception. "invalid UTF-8")))
+    (String. bs utf-8)))

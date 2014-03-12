@@ -9,20 +9,55 @@
            [io.netty.handler.codec EncoderException]))
 
 (deftest connect-validate-message-test
-  (testing "returns nil when valid"
-    (is (= nil (validate-message {:type :connect :client-id "1"}))))
+  (let [valid {:type :connect
+               :client-id "1"
+               :protocol-name "MQIsdp"
+               :protocol-version 3
+               :duplicate false
+               :qos 0
+               :retain false
+               :keepalive 0}]
 
-  (testing "it throws for no client id"
-    (is (thrown? EncoderException (validate-message {:type :connect}))))
+    (testing "returns nil when valid"
+      (is (= nil (validate-message valid))))
 
-  (testing "it throws for blank client id"
-    (is (thrown? EncoderException (validate-message {:type :connect :client-id ""}))))
+    (testing "it throws for no client id"
+      (is (thrown? EncoderException (validate-message (dissoc valid :client-id)))))
 
-  (testing "it throws for password but no username"
-    (is (thrown? EncoderException (validate-message {:type :connect :client-id "1" :password "pa55word"}))))
+    (testing "it throws for blank client id"
+      (is (thrown? EncoderException (validate-message (assoc valid :client-id "")))))
 
-  (testing "it throws for negative keepalive"
-    (is (thrown? EncoderException (validate-message {:type :connect :client-id "1" :keepalive -1})))))
+    (testing "it throws for password but no username"
+      (is (thrown? EncoderException (validate-message (assoc valid :password "pa55word")))))
+
+    (testing "it throws for negative keepalive"
+      (is (thrown? EncoderException (validate-message (assoc valid :keepalive -1)))))
+
+    (testing "it throws for no protocol name"
+      (is (thrown? EncoderException (validate-message (dissoc valid :protocol-name)))))
+
+    (testing "it throws for no protocol version"
+      (is (thrown? EncoderException (validate-message (dissoc valid :protocol-version)))))
+
+    (testing "it throws for invalid protocol name"
+      (is (thrown? EncoderException (validate-message (assoc valid :protocol-name "BLAH")))))
+
+    (testing "it throws for invalid protocol version"
+      (is (thrown? EncoderException (validate-message (assoc valid :protocol-version 2)))))
+
+    (testing "it throws for protocol version/name mismatch"
+      (is (thrown? EncoderException (validate-message (assoc valid
+                                                             :protocol-name "MQTT"
+                                                             :protocol-version 3)))))
+
+    (testing "it throws for invalid duplicate flag"
+      (is (thrown? EncoderException (validate-message (assoc valid :duplicate true)))))
+
+    (testing "it throws for invalid retain flag"
+      (is (thrown? EncoderException (validate-message (assoc valid :retain true)))))
+
+    (testing "it throws for invalid qos"
+      (is (thrown? EncoderException (validate-message (assoc valid :qos 1)))))))
 
 (deftest encoding-connect-packet-test
   (testing "when encoding a simple Connect packet"

@@ -5,18 +5,45 @@
   (:require [clojure.string :as string])
   (:import [io.netty.handler.codec EncoderException]))
 
+(def ^:private protocols
+  {"MQIsdp" 3
+   "MQTT" 4})
+
 (defmethod validate-message :connect
-  [{:keys [username password keepalive client-id]}]
-  (if (string/blank? client-id)
-    (throw (EncoderException.)))
+  [{:keys [username password keepalive client-id protocol-name protocol-version duplicate retain qos]}]
+  (when (string/blank? client-id)
+    (throw (EncoderException. "Blank client-id")))
 
-  (if (and (string/blank? username)
+  (when (and (string/blank? username)
            (not (string/blank? password)))
-    (throw (EncoderException.)))
+    (throw (EncoderException. "Password present without Username")))
 
-  (if (and (not (nil? keepalive))
-           (neg? keepalive))
-    (throw (EncoderException.))))
+  (when-not protocol-name
+    (throw (EncoderException. "No protocol name")))
+
+  (when-not protocol-version
+    (throw (EncoderException. "No protocol version")))
+
+  (when-not (= (get protocols protocol-name) protocol-version)
+    (throw (EncoderException. (format "Protocol name/version mismatch: %s/%d" protocol-name protocol-version))))
+
+  (when-not qos
+    (throw (EncoderException. "No qos")))
+
+  (when-not (zero? qos)
+    (throw (EncoderException. "QOS must be 0 for connect packets")))
+
+  (when retain
+    (throw (EncoderException. "Retain is not allowed on connect packets")))
+
+  (when duplicate
+    (throw (EncoderException. "Duplicate is not allowed on connect packets")))
+
+  (when-not keepalive
+    (throw (EncoderException. "No keepalive")))
+
+  (when (neg? keepalive)
+    (throw (EncoderException. "Negative keepalive"))))
 
 (defmethod message-defaults :connect
   [message]
@@ -25,7 +52,10 @@
    :clean-session true
    :will-retain false
    :will-qos 0
-   :keepalive 10})
+   :keepalive 10
+   :duplicate false
+   :retain false
+   :qos 0})
 
 (defn- optional-string-length
   [string]

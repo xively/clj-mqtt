@@ -1,4 +1,4 @@
-(defproject clj-mqtt "0.4.1-alpha"
+(defproject clj-mqtt "0.4.2-alpha"
 
   :description "Clojure MQTT Codec for Netty"
 

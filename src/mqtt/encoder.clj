@@ -29,11 +29,11 @@
 (defn encode-fixed-header
   [packet ^ByteBuf out]
   (let [type-byte (message-type-byte (:type packet))
-        dup       (bool-to-byte (:dup packet))
+        duplicate (bool-to-byte (:duplicate packet))
         qos       (int-to-byte (or (:qos packet) 0))
         retain    (bool-to-byte (:retain packet))
         flags (bit-or (bit-shift-left type-byte 4)
-                      (bit-shift-left dup 3)
+                      (bit-shift-left duplicate 3)
                       (bit-shift-left qos 1)
                       (bit-shift-left retain 0))]
     (.writeByte out flags))

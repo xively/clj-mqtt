@@ -27,7 +27,7 @@
   ([packet in]
     (let [flags (parse-flags in
                             :type 4
-                            :dup 1
+                            :duplicate 1
                             :qos 2
                             :retain 1)
           parsed-message-type (message-types (:type flags))]
@@ -36,7 +36,7 @@
         (throw (StreamCorruptedException. "Valid message types are 1 through 14")))
 
       {:type    parsed-message-type
-       :dup     (:dup flags)
+       :duplicate     (:duplicate flags)
        :qos     (:qos flags)
        :retain  (:retain flags)})))
 

@@ -36,7 +36,7 @@
 
   (testing "when encoding a Connack packet with everything set"
     (let [encoder (make-encoder)
-          packet  {:type :connack :return-code :accepted :dup true :qos 3 :retain true}
+          packet  {:type :connack :return-code :accepted :duplicate true :qos 3 :retain true}
           out     (Unpooled/buffer 4)]
       (.encode encoder nil packet out)
       (is (= (byte-buffer-to-bytes out) 
@@ -106,7 +106,7 @@
         (is (= :connack (:type decoded))))
 
       (testing "should not be a duplicate"
-        (is (= false (:dup decoded))))
+        (is (= false (:duplicate decoded))))
 
       (testing "parses the qos"
         (is (= 0 (:qos decoded))))
@@ -137,7 +137,7 @@
         (is (= :connack (:type decoded))))
 
       (testing "should not be a duplicate"
-        (is (= false (:dup decoded))))
+        (is (= false (:duplicate decoded))))
 
       (testing "parses the qos"
         (is (= 0 (:qos decoded))))
@@ -168,7 +168,7 @@
         (is (= :connack (:type decoded))))
 
       (testing "should not be a duplicate"
-        (is (= false (:dup decoded))))
+        (is (= false (:duplicate decoded))))
 
       (testing "parses the qos"
         (is (= 0 (:qos decoded))))
@@ -199,7 +199,7 @@
         (is (= :connack (:type decoded))))
 
       (testing "should not be a duplicate"
-        (is (= false (:dup decoded))))
+        (is (= false (:duplicate decoded))))
 
       (testing "parses the qos"
         (is (= 0 (:qos decoded))))
@@ -230,7 +230,7 @@
         (is (= :connack (:type decoded))))
 
       (testing "should not be a duplicate"
-        (is (= false (:dup decoded))))
+        (is (= false (:duplicate decoded))))
 
       (testing "parses the qos"
         (is (= 0 (:qos decoded))))
@@ -261,7 +261,7 @@
         (is (= :connack (:type decoded))))
 
       (testing "should not be a duplicate"
-        (is (= false (:dup decoded))))
+        (is (= false (:duplicate decoded))))
 
       (testing "parses the qos"
         (is (= 0 (:qos decoded))))
@@ -292,7 +292,7 @@
         (is (= :connack (:type decoded))))
 
       (testing "should not be a duplicate"
-        (is (= false (:dup decoded))))
+        (is (= false (:duplicate decoded))))
 
       (testing "parses the qos"
         (is (= 0 (:qos decoded))))

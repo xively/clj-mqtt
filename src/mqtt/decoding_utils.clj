@@ -46,7 +46,7 @@
 
   Example:
 
-    (parse-flags buffer :type 4, :dup 1, :qos 2, :retain 1)
+    (parse-flags buffer :type 4, :duplicate 1, :qos 2, :retain 1)
 
   "
   [in & kvs]

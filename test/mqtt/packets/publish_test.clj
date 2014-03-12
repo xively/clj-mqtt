@@ -28,7 +28,7 @@
         (is (= :publish (:type decoded))))
 
       (testing "should not be a duplicate"
-        (is (= false (:dup decoded))))
+        (is (= false (:duplicate decoded))))
 
       (testing "parses the qos"
         (is (= 0 (:qos decoded))))
@@ -45,7 +45,7 @@
       (testing "parses the payload"
         (is (= "hello world" (String. (:payload decoded)))))))
 
-  (testing "when parsing a publish packet with qos 2 and retain and dup flags set"
+  (testing "when parsing a publish packet with qos 2 and retain and duplicate flags set"
     (let [decoder (make-decoder)
           packet  (bytes-to-byte-buffer
                     ;; fixed header
@@ -67,7 +67,7 @@
         (is (= :publish (:type decoded))))
 
       (testing "should not be a duplicate"
-        (is (= true (:dup decoded))))
+        (is (= true (:duplicate decoded))))
 
       (testing "parses the qos"
         (is (= 2 (:qos decoded))))
@@ -104,7 +104,7 @@
         (is (= :publish (:type decoded))))
 
       (testing "should not be a duplicate"
-        (is (= false (:dup decoded))))
+        (is (= false (:duplicate decoded))))
 
       (testing "parses the qos"
         (is (= 0 (:qos decoded))))
@@ -138,7 +138,7 @@
         (is (= :publish (:type decoded))))
 
       (testing "should not be a duplicate"
-        (is (= false (:dup decoded))))
+        (is (= false (:duplicate decoded))))
 
       (testing "parses the qos"
         (is (= 0 (:qos decoded))))
@@ -277,11 +277,11 @@
                         ;; payload
                         "hello world"))))))
 
-  (testing "when encoding a publish packet with qos 2 and dup flag set"
+  (testing "when encoding a publish packet with qos 2 and duplicate flag set"
     (let [encoder (make-encoder)
           packet  {:type :publish
                    :qos 2
-                   :dup true
+                   :duplicate true
                    :message-id 5
                    :topic "c/d"
                    :payload "hello world"}

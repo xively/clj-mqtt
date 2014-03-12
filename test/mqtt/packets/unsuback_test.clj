@@ -68,7 +68,7 @@
         (is (= :unsuback (:type decoded))))
 
       (testing "should not be a duplicate"
-        (is (= false (:dup decoded))))
+        (is (= false (:duplicate decoded))))
 
       (testing "parses the qos"
         (is (= 0 (:qos decoded))))
@@ -97,7 +97,7 @@
         (is (= :unsuback (:type decoded))))
 
       (testing "should not be a duplicate"
-        (is (= false (:dup decoded))))
+        (is (= false (:duplicate decoded))))
 
       (testing "parses the qos"
         (is (= 0 (:qos decoded))))

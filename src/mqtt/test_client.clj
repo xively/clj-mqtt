@@ -29,10 +29,14 @@
                           (async/close! done))))
 
 (declare close)
-(defn- gen-response-handler [sock f]
+(defn- gen-response-handler [{:keys [subscriptions in unsubscribed-messages] :as sock}]
   (proxy [SimpleChannelInboundHandler] []
     (channelRead0 [ctx msg]
-      (f msg))
+      (let [chan (if (= :publish (:type msg))
+                   (or (-> @subscriptions (get (:topic msg)) :chan)
+                       unsubscribed-messages)
+                   in)]
+        (async/put! chan msg)))
 
     (channelInactive [ctx]
       (close (assoc sock :future ctx)))
@@ -68,17 +72,7 @@
            bootstrap (Bootstrap.)]
        (Netty/group bootstrap (NioEventLoopGroup.))
        (Netty/clientChannel bootstrap NioSocketChannel)
-       (Netty/handler bootstrap
-                      (gen-channel-initializer
-                       sock
-                       (gen-response-handler
-                        sock
-                        (fn [msg]
-                          (let [chan (if (= :publish (:type msg))
-                                       (or (-> @subscriptions (get (:topic msg)) :chan)
-                                           (:unsubscribed-messages sock))
-                                       (:in sock))]
-                            (async/put! chan msg))))))
+       (Netty/handler bootstrap (gen-channel-initializer sock (gen-response-handler sock)))
 
        (assoc sock :future (-> (.connect bootstrap (.getHost uri) (.getPort uri))
                                (.await))))))

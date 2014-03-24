@@ -20,7 +20,7 @@
 
 (deftest connack-encoding-test
   (testing "when encoding a simple Connack packet"
-    (let [encoder (make-encoder)
+    (let [encoder (make-encoder :error-fn #(throw %))
           packet  {:type :connack :return-code :accepted}
           out     (Unpooled/buffer 4)]
       (.encode encoder nil packet out)
@@ -80,7 +80,7 @@
               0x00]))))
 
   (testing "when encoding a Connack packet with an invalid return code"
-    (let [encoder (make-encoder)
+    (let [encoder (make-encoder :error-fn #(throw %))
           packet  {:type :connack :return-code :not-a-valid-return-code}
           out     (Unpooled/buffer 4)]
       (is (thrown? EncoderException (.encode encoder nil packet out))))))

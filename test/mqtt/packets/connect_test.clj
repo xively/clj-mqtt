@@ -334,7 +334,7 @@
         (is (nil? (:username decoded))))))
 
   (testing "when parsing a Connect packet with the username and password flags set but doesn't have the fields"
-    (let [decoder (make-decoder)
+    (let [decoder (make-decoder :error-fn #(throw % ))
           packet  (bytes-to-byte-buffer
                     ;; Fixed header
                     0x10 0x16

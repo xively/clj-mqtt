@@ -65,11 +65,20 @@
         (recur in multiplier value)))))
 
 (defn make-decoder
-  []
+  [& {:keys [error-fn]
+      :or {error-fn identity}}]
   (proxy [ReplayingDecoder] []
     (decode [ctx ^ByteBuf in ^java.util.List out]
-      (when (.isReadable in)
-        (let [fixed-header     (decode-fixed-header in)
-              ;; slice down the buffer so we can't overflow
-              new-in           (.readSlice in (parse-remaining-length in))]
-          (.add out (-> fixed-header (decode-variable-header new-in) (decode-payload new-in))))))))
+      (try
+        (when (.isReadable in)
+          (let [fixed-header     (decode-fixed-header in)
+                ;; slice down the buffer so we can't overflow
+                new-in           (.readSlice in (parse-remaining-length in))
+                msg (-> fixed-header
+                        (decode-variable-header new-in)
+                        (decode-payload new-in))]
+            (.add out msg)))
+        (catch Exception e
+          (error-fn e))))
+    (exceptionCaught [ctx cause]
+      (error-fn cause))))

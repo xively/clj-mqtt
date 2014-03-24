@@ -4,5 +4,7 @@
   (:import [io.netty.channel CombinedChannelDuplexHandler]))
 
 (defn make-codec
-  []
-  (CombinedChannelDuplexHandler. (make-decoder) (make-encoder)))
+  [& {:keys [error-fn]
+      :or {error-fn identity}}]
+  (CombinedChannelDuplexHandler. (make-decoder :error-fn error-fn)
+                                 (make-encoder :error-fn error-fn)))

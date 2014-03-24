@@ -68,12 +68,19 @@
           packet)))))
 
 (defn make-encoder
-  []
+  [& {:keys [error-fn]
+      :or {error-fn identity}}]
   (proxy [MessageToByteEncoder] []
     (encode [ctx msg ^ByteBuf out]
-      (let [msg (merge (message-defaults msg) msg)]
-        (validate-message msg)
-        (encode-fixed-header msg out)
-        (encode-remaining-length msg out)
-        (encode-variable-header msg out)
-        (encode-payload msg out)))))
+      (try
+        (let [msg (update-in msg [:type] keyword)
+              msg (merge (message-defaults msg) msg)]
+          (validate-message msg)
+          (encode-fixed-header msg out)
+          (encode-remaining-length msg out)
+          (encode-variable-header msg out)
+          (encode-payload msg out))
+        (catch Exception e
+          (error-fn e))))
+    (exceptionCaught [ctx cause]
+      (error-fn cause))))

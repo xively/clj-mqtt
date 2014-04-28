@@ -62,15 +62,17 @@
   ([addr]
      (let [uri (java.net.URI. addr)
            subscriptions (atom {})
+           group (NioEventLoopGroup.)
            sock {:in (async/chan)
                  :out (async/chan)
                  :unsubscribed-messages (async/chan)
                  :next-id (atom 0)
                  :subscriptions subscriptions
                  :client-id (atom nil)
-                 :channel (atom nil)}
+                 :channel (atom nil)
+                 :group group}
            bootstrap (Bootstrap.)]
-       (Netty/group bootstrap (NioEventLoopGroup.))
+       (Netty/group bootstrap group)
        (Netty/clientChannel bootstrap NioSocketChannel)
        (Netty/handler bootstrap (gen-channel-initializer sock (gen-response-handler sock)))
 
@@ -225,7 +227,8 @@
   (async/close! (:in socket))
   (async/close! (:unsubscribed-messages socket))
   (doseq [{:keys [chan]} (vals @(:subscriptions socket))]
-    (async/close! chan)))
+    (async/close! chan))
+  (.shutdown (:group socket)))
 
 (defn disconnect
   [socket]

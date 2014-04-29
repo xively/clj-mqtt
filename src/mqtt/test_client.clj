@@ -228,7 +228,7 @@
   (async/close! (:unsubscribed-messages socket))
   (doseq [{:keys [chan]} (vals @(:subscriptions socket))]
     (async/close! chan))
-  (.shutdown (:group socket)))
+  (.await (.shutdownGracefully ^NioEventLoopGroup (:group socket)) 500))
 
 (defn disconnect
   [socket]

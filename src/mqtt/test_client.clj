@@ -15,12 +15,16 @@
   "Consume messages from a given channel calling f on evey message"
   [chan f]
   (async/go-loop []
-    (try
-      (let [msg (async/<! chan)]
-        (when-not (nil? msg)
-          (f msg)
-          (recur)))
-      (catch Exception e e))))
+    (let [[err msg] 
+          (try
+            (let [msg (async/<! chan)]
+              (when-not (nil? msg)
+                (f msg))
+              [nil msg])
+            (catch Exception e [e nil]))]
+      (cond
+        (not (nil? err)) err
+        (not (nil? msg)) (recur)))))
 
 (defn- start-sender [sock channel]
   (consume (:out sock) #(let [[done msg] %1]

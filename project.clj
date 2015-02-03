@@ -1,11 +1,11 @@
-(defproject clj-mqtt "0.4.8-alpha"
+(defproject clj-mqtt "0.4.9-alpha"
 
   :description "Clojure MQTT Codec for Netty"
 
   :url "http://github.com/xively/clj-mqtt"
 
   :dependencies [[io.netty/netty-all "4.0.18.Final"]
-                 [org.clojure/core.async "0.1.278.0-76b25b-alpha"]]
+                 [org.clojure/core.async "0.1.303.0-886421-alpha"]]
 
   ;; Defaults
   :source-paths ["src"]
@@ -35,9 +35,9 @@
 
   :aliases {"all" ["with-profile" "dev:1.3,dev:1.4,dev:1.5,dev:1.6,dev"]}
 
-  :repositories {"springsource" {:url "http://repo.springsource.org/libs-milestone/"
-                                 :snapshots true
-                                 :releases {:checksum :fail :update :always}}}
+  :repositories [[ "springsource" {:url "http://repo.springsource.org/libs-milestone/"
+                                   :snapshots true
+                                   :releases {:checksum :fail :update :always}}]]
 
   :license {:name "BSD 3-Clause License"
             :distribution :repo})

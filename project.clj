@@ -1,11 +1,11 @@
-(defproject clj-mqtt "0.4.9-alpha"
+(defproject kotyo/clj-mqtt "0.4.10-SNAPSHOT"
 
   :description "Clojure MQTT Codec for Netty"
 
-  :url "http://github.com/xively/clj-mqtt"
+  :url "http://github.com/kotyo/clj-mqtt"
 
-  :dependencies [[io.netty/netty-all "4.0.18.Final"]
-                 [org.clojure/core.async "0.1.303.0-886421-alpha"]]
+  :dependencies [[io.netty/netty-all "4.1.44.Final"]
+                 [org.clojure/core.async "0.7.559"]]
 
   ;; Defaults
   :source-paths ["src"]

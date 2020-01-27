@@ -35,7 +35,7 @@
 
   :aliases {"all" ["with-profile" "dev:1.3,dev:1.4,dev:1.5,dev:1.6,dev"]}
 
-  :repositories [[ "springsource" {:url "http://repo.springsource.org/libs-milestone/"
+  :repositories [[ "springsource" {:url "https://repo.springsource.org/libs-milestone/"
                                    :snapshots true
                                    :releases {:checksum :fail :update :always}}]]
 
